@@ -17,13 +17,13 @@ class OrderModelNode(object):
     def __init__(self):
         print("hellow world")
         try:
-            self.orderModel(2)
+            self.orderModel(5)
         except rospy.ROSInterruptException:
             print("error rospy intrrupt exception")
             pass
     # order simulation model #TODO this is probably a different node
     # will need to listen to the frequency model and add them to a queue
-    def orderModel (self, numberOfTable):
+    def orderModel (self, numberOfTables):
         pub = rospy.Publisher('order', String, queue_size=100)
         # defined demand phases high medium and low
         HIGH = 1 # every factor of 1
@@ -32,6 +32,7 @@ class OrderModelNode(object):
         
         Q = [] #queue of orders
         
+        queueAmount = numberOfTables - 1
 
         #TODO set timeout between tables
 
@@ -54,16 +55,17 @@ class OrderModelNode(object):
                 # randomly generate order
                 
                 while 1:
-                    table = random.randint(1, numberOfTable)
+                    print("Q : ", Q)
+                    table = random.randint(1, numberOfTables)
                     if table not in Q:
                         break
-                if len(Q)<5:
+                if len(Q)<queueAmount-1:
                     Q.append(table)
                     
-                elif Q and len(Q) == 5:
-                    for j in range(0,4):
+                elif Q and len(Q) == queueAmount-1:
+                    for j in range(0,queueAmount-2):
                         Q[j] = Q[j+1]
-                    Q[4] = table
+                    Q[queueAmount-2] = table
                                                     
                 order = 'T' + str(table)
                 # publish order
