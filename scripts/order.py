@@ -67,7 +67,7 @@ class OrderModelNode(object):
                         Q[j] = Q[j+1]
                     Q[queueAmount-2] = table
                                                     
-                order = 'T' + str(table)
+                order = 'T' + str(table) + " "+ "D"+ str(orderFrequency)
                 # publish order
 
                 print("Order for table " + str(table) + " is " + str(order))
