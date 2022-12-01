@@ -17,7 +17,7 @@ class OrderModelNode(object):
     def __init__(self):
         print("hellow world")
         try:
-            self.orderModel(5)
+            self.orderModel(6)
         except rospy.ROSInterruptException:
             print("error rospy intrrupt exception")
             pass
@@ -31,9 +31,10 @@ class OrderModelNode(object):
         LOW = 3 # every factor of 3
         
         Q = [] #queue of orders
-        
-        queueAmount = numberOfTables - 1
-
+        if numberOfTables < 7:
+            queueAmount = numberOfTables - 1
+        else:
+            queueAmount = 4
         #TODO set timeout between tables
 
         while True:
@@ -45,7 +46,7 @@ class OrderModelNode(object):
                 orderFrequency = MEDIUM
             elif orderFrequency == 3:
                 orderFrequency = LOW
-            
+            orderFrequency = LOW
             print("switching to demand phade: ", orderFrequency)
             x = 10 # suggested number of orders for each phase
             # randomly change order frequency every x orders with noise
@@ -75,7 +76,8 @@ class OrderModelNode(object):
                 data.data = order
                 pub.publish(data)
                 #distribution centered around centered around the frequency  
-                rospy.sleep(np.random.normal(orderFrequency, 0.5 * orderFrequency))
+                factor = 2 # slow the demand rate by a factor of x
+                rospy.sleep(np.random.normal(orderFrequency*factor, 0.5 * orderFrequency * factor))
                 
 
             
